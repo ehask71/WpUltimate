@@ -1,4 +1,4 @@
-WpUltimate
-==========
+WpUltimate CPanel Plugin
+========================
 
-WP-Ultimate
+
