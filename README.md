@@ -8,4 +8,7 @@ specific Skeleton directories or Application/Framework (WordPress,Zend Framework
 
 Installation
 ------------
- 
+ Extract the WP-Ultimate package 
+ chmod +x install.sh
+ ./install.sh
+ Follow Prompts
