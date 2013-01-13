@@ -32,11 +32,7 @@ class wpu_zendframework2 {
     }
     
     private function setPermissions(){
-	if($this->config['suexec']){
-	    system("chown -R {$this->input['data']['user']}:{$this->input['data']['user']} {$this->input['data']['homedir']}/* ");
-	} else {
-	   
-	}
+	system("chown -R {$this->input['data']['user']}:{$this->input['data']['user']} {$this->input['data']['homedir']}/* ");
     }
 }
 ?>
