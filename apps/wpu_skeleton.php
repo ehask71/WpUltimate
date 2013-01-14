@@ -11,6 +11,7 @@ class wpu_skeleton {
     protected $input;
     protected $license;
     private $skelhome;
+    private $skelnum;
 
     public function __construct($config, $input, $license, xmlapi $api) {
 	$this->config = $config;
@@ -18,13 +19,16 @@ class wpu_skeleton {
 	$this->license = $license;
 	$this->api = $api;
 	$this->skelhome = $this->config['skelhome'];
+	$this->skelnum = (int)$this->config['skeleton_number'];
     }
 
     public function process(){
-        system("cp -Rpfv {$this->skelhome}/skeleton/.[a-z]* {$this->input['data']['homedir']}/ ");
-	system("cp -Rpfv {$this->skelhome}/skeleton/* {$this->input['data']['homedir']}/ ");
+	if(file_exists($this->skelhome."/skeleton".$this->skelnum."/")){
+	    system("cp -Rpfv {$this->skelhome}/skeleton".$this->skelnum."/.[a-z]* {$this->input['data']['homedir']}/ ");
+	    system("cp -Rpfv {$this->skelhome}/skeleton".$this->skelnum."/* {$this->input['data']['homedir']}/ ");
 	
-	$this->setPermissions();
+	    $this->setPermissions();
+	}
     }
     
     private function setPermissions(){

@@ -63,6 +63,10 @@ function create() {
 	}
 	if($action){
 	    // We have a hit
+	    if(strpos($action,'skeleton')){
+		$config['skeleton_number'] = (int)str_replace("skeleton", "", $action);
+		$action = 'skeleton';
+	    }
 	    $action = 'wpu_'.$action;
 	    include_once 'apps/'.$action.'.php';
 	    
