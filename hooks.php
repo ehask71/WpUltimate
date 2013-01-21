@@ -2,7 +2,7 @@
 <?php
 require 'xmlapi.php';
 require 'utils.php';
-//require 'inc/registry.php';
+require 'inc/registry.php';
 
 $switches = (count($argv) > 1) ? $argv : array();
 
@@ -24,12 +24,27 @@ if (in_array('--describe', $switches)) {
  * 
  */
 function create() {
+    $registry = new Registry();
     $input = get_passed_data();
+    $registry->set('input', $input);
     $config = parseConfig('wpu.conf');
+    $registry->set("config", $config);
     $license = getLicenseData($config['license']);
+    $registry->set("license", $license);
+    
+    $error = false;
+    $debug = false;
+    if($config['debug']){
+	require_once 'inc/logger.php';
+	$debug = new logger($config['debug_log'], $config['log_path'].'/');
+	$registry->set("debug", $debug);
+    }
     // Base Results 
     $results = array('status'=> "0",'msg' => 'General Failure');
     // Check License
+    if($debug){
+	$debug->write("License ".$license['status']);
+    }
     if ($license['status'] == 'success' && $license['islicensed'] == 'true') {
 	// Setup CPanel API
 	$xmlapi = new xmlapi('127.0.0.1');
@@ -40,7 +55,9 @@ function create() {
 	    $hash = ($config['apihash'] != '')?$config['apihash']:file_get_contents('/root/.accesshash');
 	    $xmlapi->set_hash($hash);
 	}
-	
+	if($debug){
+	    $debug->write("Init CPanel Api");
+	}
 	// Get HomeDir
 	$input['data']['homedir'] = getHomeDir($input['data']['domain'], $input['data']['user']);
 	// WP = Wordpress  Zf = Zend Framework  OC = OpenCart
@@ -62,6 +79,9 @@ function create() {
 	    }
 	}
 	if($action){
+	    if($debug){
+		$debug->write("Action: ".$action);
+	    }
 	    // We have a hit
 	    if(strpos($action,'skeleton')){
 		$config['skeleton_number'] = (int)str_replace("skeleton", "", $action);
@@ -76,9 +96,16 @@ function create() {
 	}
     } else {
 	// License Failed
+	if($debug){
+	    $debug->write("License Failure");
+	}
 	$results['msg'] = "License Failure";
     }
-
+    
+    if($debug){
+	$debug->write("Return Status:".$results['status']."~".$results['msg']);
+	$debug->write("Finished");
+    }
     return array($results['status'], $results['msg']);
 }
 
