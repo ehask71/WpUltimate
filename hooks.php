@@ -78,19 +78,23 @@ function create() {
 		    break;
 	    }
 	}
-	if($action){
-	    if($debug){
-		$debug->write("Action: ".$action);
-	    }
+	if($action){	    
 	    // We have a hit
 	    if(strpos($action,'skeleton')){
 		$config['skeleton_number'] = (int)str_replace("skeleton", "", $action);
+		$registry->set('skeleton_number', $config['skeleton_number']);
+		if($debug){
+		    $debug->write("Skeleton Number: ".$config['skeleton_number']);
+		}
 		$action = 'skeleton';
 	    }
 	    $action = 'wpu_'.$action;
+	    if($debug){
+		$debug->write("Action: ".$action);
+	    }
 	    include_once 'apps/'.$action.'.php';
 	    
-	    $class = new $action($config,$input,$license,$xmlapi);
+	    $class = new $action($registry,$xmlapi);
 	    $results = $class->process();
 	    
 	}
