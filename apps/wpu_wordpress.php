@@ -12,10 +12,10 @@ class wpu_wordpress {
     protected $license;
     private $skelhome;
 
-    public function __construct($config, $input, $license, xmlapi $api) {
-	$this->config = $config;
-	$this->input = $input;
-	$this->license = $license;
+    public function __construct(Registry $registry, xmlapi $api) {
+	$this->config = $registry->get('config');
+	$this->input = $registry->get('input');
+	$this->license = $registry->get('license');
 	$this->api = $api;
 	$this->skelhome = $this->config['skelhome'];
     }
